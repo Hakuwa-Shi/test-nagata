@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>440Hz 音声テスト</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* 画面全体を高さの基準にする */
+            margin: 0;
+        }
+        .button-container {
+            display: flex;
+            gap: 20px; /* ボタン同士の隙間 */
+        }
+        .sound-btn {
+            /* 縦横比を1:1にする設定 */
+            width: 100px;
+            aspect-ratio: 1 / 1; 
+            
+            /* 角を丸くする設定 */
+            border-radius: 20px; 
+            
+            /* 見た目の装飾 */
+            border: none;
+            background-color: #007bff;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        /* マウスを重ねた時のアクション */
+        .sound-btn:hover {
+            background-color: #0056b3;
+        }
+        /* クリックした時のアクション（少し沈む） */
+        .sound-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="button-container">
+        <button class="sound-btn">1</button>
+        <button class="sound-btn">2</button>
+        <button class="sound-btn">3</button>
+    </div>
+
+    <script>
+        // 440Hzの音を1秒間鳴らす関数
+        function play440HzTone() {
+            // AudioContextの生成（ブラウザ標準の音声APIを呼び出し）
+            // ※古いSafariなどにも対応できるようwebkitのプレフィックスも入れています
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            const audioCtx = new AudioContext();
+
+            // オシレーター（音源）の作成
+            const oscillator = audioCtx.createOscillator();
+            
+            // 音の波形と周波数を設定
+            oscillator.type = 'sine'; // 正弦波（ピーという澄んだ音）
+            oscillator.frequency.value = 440; // 440Hz（音楽の基準となる「ラ」の音）
+
+            // 出力先（スピーカー）に接続
+            oscillator.connect(audioCtx.destination);
+
+            // 音の再生を開始
+            oscillator.start();
+
+            // 現在の時間からちょうど1秒後に音を停止する
+            oscillator.stop(audioCtx.currentTime + 1);
+        }
+
+        // HTML内の '.sound-btn' クラスを持つすべてのボタンを取得
+        const buttons = document.querySelectorAll('.sound-btn');
+        
+        // それぞれのボタンにクリックイベントを追加
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                play440HzTone();
+            });
+        });
+    </script>
+
+</body>
+</html>
